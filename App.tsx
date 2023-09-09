@@ -1,20 +1,31 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar'
+import {
+  View,
+  StatusBar as reactNativeStatusBar
+} from 'react-native'
+import CreateStyledComponent from './src/libs/styledComponents'
+import { createContext } from 'react'
+
+const MainView = CreateStyledComponent(View,{
+  flex: 1,
+  alignItems: 'center',
+  justifyContent: 'center',
+})
+
+const StatusBarBackground = CreateStyledComponent(View,{
+  width: "100%",
+})
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  const ThemeContext = createContext({})
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  return (
+    <MainView>
+      <StatusBar style="dark"/>
+      <StatusBarBackground style={{
+        height: reactNativeStatusBar.currentHeight
+      }}/>
+      <ThemeContext.Provider value={true}></ThemeContext.Provider>
+    </MainView>
+  )
+}
