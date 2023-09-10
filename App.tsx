@@ -1,6 +1,10 @@
 import { StatusBar } from 'expo-status-bar'
+// import changeNavigationBarColor from 'react-native-navigation-bar-color'
+
 import {
-  View,
+  // ColorSchemeName, // get native theme
+  // PlatformOSType // get os type
+  View,Text,
   StatusBar as reactNativeStatusBar
 } from 'react-native'
 import CreateStyledComponent from './src/libs/styledComponents'
@@ -21,11 +25,11 @@ export default function App() {
 
   return (
     <MainView>
+      <ThemeContext.Provider value={true}></ThemeContext.Provider>
       <StatusBar style="dark"/>
       <StatusBarBackground style={{
         height: reactNativeStatusBar.currentHeight
       }}/>
-      <ThemeContext.Provider value={true}></ThemeContext.Provider>
     </MainView>
   )
 }
