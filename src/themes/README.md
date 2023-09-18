@@ -1,6 +1,7 @@
 
 ThemeProvider: 테마를 로드하고 적절한 *Context* 를 반환합니다. 유저의 테마
-               설정값과 네이티브 테마를 확인하는 역할을 수행합니다
+               설정값과 네이티브 테마를 확인하는 역할을 수행합니다.
+               state 트리거해서 테마도 업데이트 해줌
 ThemeBase : 모든 테마의 베이스가 되어지며, ToastBackground, ToastText 등과 같은 모든
             컴포넌트들의 색들을 프로퍼티로 가집니다. 실질적으로 사용 X
             extendable interface 입니다
