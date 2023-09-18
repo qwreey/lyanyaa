@@ -1,5 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useState, useEffect, useCallback, createContext, useContext } from 'react'
+import {
+    useState,
+    useEffect,
+    useCallback,
+    createContext,
+    useContext,
+    useRef,
+    type PropsWithChildren,
+} from 'react'
 
 export type TransactionState<U> = {
     running: boolean,
@@ -7,7 +15,7 @@ export type TransactionState<U> = {
     errored?: boolean,
 }
 
-export type Storage<KEY = string> = {
+export type ValueHandler<KEY = string> = {
     prefetch():       undefined,
     read():           TransactionState<any>,
     write(value:any,errorHandler?:(error:string)=>undefined): TransactionState<any>,
@@ -28,6 +36,20 @@ export const StorageContext = createContext({
         [key: string]: Promise<object>|undefined
     }
 })
+
+export const createStorage = ()=>{
+    const storage = useRef({
+        cachedValues: {},
+        updateTriggers: {},
+        waitingReadPromises: {},
+    })
+
+    return ({children}: PropsWithChildren)=>(
+        <StorageContext.Provider value={storage.current}>
+            {children}
+        </StorageContext.Provider>
+    )
+}
 
 export const useStorage = (key: string) => {
     const storageCache = useContext(StorageContext)
@@ -68,7 +90,7 @@ export const useStorage = (key: string) => {
                         trigger({})
             }).catch(errorHandler||(error=>{console.error(error)}))
         }
-    } as Storage) as unknown as Function,[]) as unknown as Storage<typeof key>
+    } as ValueHandler) as unknown as Function,[]) as unknown as ValueHandler<typeof key>
 
     return storage
 }

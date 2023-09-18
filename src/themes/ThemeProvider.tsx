@@ -19,7 +19,7 @@ export default function ThemeProvider(props:props) {
         return (<>{props.loading}</>)
 
     return (
-        <ThemeContext.Provider value={}>
+        <ThemeContext.Provider value={{}}>
             {props.children}
         </ThemeContext.Provider>
     )
