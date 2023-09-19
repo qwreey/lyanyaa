@@ -15,9 +15,29 @@
       "**/*"
     ],
     "ios": {
+      "splash": {
+        "image": "./src/assets/app/splash.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#ffffff",
+        "dark": {
+          "image": "./src/assets/app/splash.png",
+          "resizeMode": "cover",
+          "backgroundColor": "#000000"
+        }
+      },
       "supportsTablet": true
     },
     "android": {
+      "splash": {
+        "image": "./src/assets/app/splash.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#ffffff",
+        "dark": {
+          "image": "./src/assets/app/splash.png",
+          "resizeMode": "cover",
+          "backgroundColor": "#000000"
+        }
+      },
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/app/adaptive-icon.png",
         "backgroundColor": "#ffffff"

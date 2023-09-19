@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import {
     useState,
     useEffect,
-    useCallback,
     createContext,
     useContext,
     useRef,
@@ -15,17 +14,13 @@ export type TransactionState<U> = {
     errored?: boolean,
 }
 
-export type ValueHandler<KEY = string> = {
-    prefetch():       undefined,
-    read():           TransactionState<any>,
-    write(value:any,errorHandler?:(error:string)=>undefined): TransactionState<any>,
+export type ValueHandler = {
+    prefetch(): undefined,
+    read(): TransactionState<any>,
+    write(value:any,errorHandler?:(error:string)=>undefined): TransactionState<string|undefined>,
 }
 
-export const StorageContext = createContext({
-    cachedValues: {},
-    updateTriggers: {},
-    waitingReadPromises: {},
-} as {
+export type Storage = {
     cachedValues: {
         [key: string]: TransactionState<any>
     },
@@ -35,62 +30,102 @@ export const StorageContext = createContext({
     waitingReadPromises: {
         [key: string]: Promise<object>|undefined
     }
-})
+    defaultValues: {
+        [key: string]: any
+    }
+}
 
-export const createStorage = ()=>{
+export const StorageContext = createContext({
+    cachedValues: {},
+    updateTriggers: {},
+    waitingReadPromises: {},
+} as Storage)
+
+interface StorageProviderProps extends PropsWithChildren {
+    defaultValues?: {
+        [key: string]: any
+    }
+}
+
+export function StorageProvider({ defaultValues, children }: StorageProviderProps) {
     const storage = useRef({
         cachedValues: {},
         updateTriggers: {},
         waitingReadPromises: {},
-    })
-
-    return ({children}: PropsWithChildren)=>(
+        defaultValues: defaultValues ?? {},
+    } as Storage)
+    return (
         <StorageContext.Provider value={storage.current}>
             {children}
         </StorageContext.Provider>
     )
 }
 
-export const useStorage = (key: string) => {
+export default function useStorage(key: string) {
     const storageCache = useContext(StorageContext)
-    const [ _, updateTrigger ] = useState({})
-    const updateTriggerMemoed = useCallback(updateTrigger,[])
+    const [ _, updateTrigger ] = useState(NaN)
 
+    // Add update trigger
     useEffect(()=>{
         let updateTriggers = storageCache.updateTriggers[key]
         if (updateTriggers === undefined)
             updateTriggers = storageCache.updateTriggers[key] = []
-        updateTriggers.push(updateTriggerMemoed)
+        updateTriggers.push(updateTrigger)
         return ()=>{
-            updateTriggers.splice(updateTriggers.indexOf(updateTriggerMemoed),1)
+            updateTriggers.splice(updateTriggers.indexOf(updateTrigger),1)
         }
     },[])
 
-    const storage = useCallback(({
+    // Create value handler
+    const valueHandler = useRef({
         read() {
+            // load cached value first
             let value = storageCache.cachedValues[key]
             if (value) return value
+
+            // if not loaded, call getItem
             if (storageCache.waitingReadPromises[key]) return { running: true }
             AsyncStorage.getItem(key).then(value=>{
-                storageCache.cachedValues[key] = { running: false, result: JSON.parse(value ?? "null"), errored: false }
+                // successfully loaded
+                storageCache.cachedValues[key] = {
+                    running: false,
+                    result: JSON.parse(value ?? "null"),
+                    errored: false
+                }
             }).catch(error=>{
-                storageCache.cachedValues[key] = { running: false, result: error, errored: true }
+                // failed
+                storageCache.cachedValues[key] = {
+                    running: false,
+                    result: error,
+                    errored: true
+                }
             }).finally(()=>{
+                // trigger all renders
                 if (storageCache.updateTriggers[key])
                     for (const trigger of storageCache.updateTriggers[key])
-                        trigger({})
+                        trigger(NaN)
             })
+
             return { running: true }
         },
         write(value, errorHandler) {
+            // call setItem to save
             AsyncStorage.setItem(key,JSON.stringify(value)).then(()=>{
-                storageCache.cachedValues[key] = { running: false, result: value, errored: false }
+                // successfully loaded update value and trigger all renders
+                storageCache.cachedValues[key] = {
+                    running: false,
+                    result: value,
+                    errored: false
+                }
                 if (storageCache.updateTriggers[key])
                     for (const trigger of storageCache.updateTriggers[key])
-                        trigger({})
-            }).catch(errorHandler||(error=>{console.error(error)}))
+                        trigger(NaN)
+            }).catch(
+                // failed
+                errorHandler||(error=>{console.error(error)})
+            )
         }
-    } as ValueHandler) as unknown as Function,[]) as unknown as ValueHandler<typeof key>
+    } as ValueHandler)
 
-    return storage
+    return valueHandler.current
 }

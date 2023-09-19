@@ -1,45 +1,40 @@
-import { StatusBar } from 'expo-status-bar'
-// import changeNavigationBarColor from 'react-native-navigation-bar-color'
-
+// React / Native / i18n import
 import {
-  ColorSchemeName, // get native theme
-  PlatformOSType, // get os type
-  View,Text,Button,
-  StatusBar as reactNativeStatusBar
+  useRef,
+} from 'react'
+import {
+  View,
 } from 'react-native'
-import CreateStyledComponent from './src/libs/styledComponents'
-import { useStorage, StorageContext, createStorage } from './src/libs/useStorage'
-import { useRef } from 'react'
-import { Main } from './src/Main'
-import ThemeProvider from './src/themes/ThemeProvider'
 
+// Library
+import Main from './src/Main'
+import CreateStyledComponent from './src/libs/styledComponents'
+import Translations from './scr/lang/translations'
+import DefaultValues from './src/defaultValues'
+import { StorageProvider } from './src/libs/useStorage'
+import { ThemeProvider } from './src/providers/ThemeProvider'
+import { NativeControllerProvider } from './src/libs/nativeController'
+import { I18nProvider } from './src/providers/I18nProvider'
+
+// Styled Components
 const MainView = CreateStyledComponent(View,{
   flex: 1,
   alignItems: 'center',
   justifyContent: 'center',
 })
 
-const StatusBarBackground = CreateStyledComponent(View,{
-  width: "100%",
-})
-
 export default function App() {
-  const Storage = createStorage()
-
   return (
     <MainView>
-      <Storage>
-        <ThemeProvider loading={}>
-          <Main/>
-        </ThemeProvider>
-      </Storage>
+      <StorageProvider defaultValues={DefaultValues}>
+        <NativeControllerProvider>
+          <I18nProvider translations={Translations}>
+            <ThemeProvider>
+              <Main/>
+            </ThemeProvider>
+          </I18nProvider>
+        </NativeControllerProvider>
+      </StorageProvider>
     </MainView>
   )
 }
-
-// <StatusBar style="dark"/>
-/* <ThemeContext.Provider value={true}>
-        <StatusBarBackground style={{
-          height: reactNativeStatusBar.currentHeight
-        }}/>
-      </ThemeContext.Provider> */

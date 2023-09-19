@@ -1,9 +1,10 @@
 import { Button } from "react-native"
 import { useStorage } from "./libs/useStorage"
-import { useCallback } from "react"
+import { useCallback, useState, useRef } from "react"
 
-export const Main = ()=>{
+export default function Main() {
     const testStorage = useStorage('test')
+
     const onPress = useCallback(()=>{
         if (testStorage.read().running) return
         testStorage.write((parseInt(testStorage.read().result) || 0) + 1)

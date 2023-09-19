@@ -1,6 +1,8 @@
 import {
     StyleSheet,
-    type ViewStyle, type TextStyle, type ImageStyle,
+    type ViewStyle,
+    type TextStyle,
+    type ImageStyle,
 } from 'react-native';
 import {
     Component,
