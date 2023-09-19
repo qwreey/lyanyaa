@@ -25,10 +25,10 @@ export function I18nProvider(props: props) {
     useEffect(()=>{
         if (language.read().running) return
         const newI18n = new I18n(props.translations)
-        newI18n.locale =
-            language.read().result === "system"
-            ? Localization.locale
-            : language.read().result
+        newI18n.locale = Localization.locale
+            // language.read().result === "system"
+            // ? Localization.locale
+            // : language.read().result
         setI18n(newI18n)
         if (props.onReady && i18n === DummyI18n) props.onReady(newI18n)
     },[ language.read() ])

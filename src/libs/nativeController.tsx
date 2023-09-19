@@ -19,14 +19,18 @@ import {
 } from 'expo-splash-screen';
 
 // Native Controllers
-interface NativeController {
+export interface NativeController {
     setAppIsReady: (ready: boolean)=>undefined,
     setStatusBarColor: (color: string)=>undefined,
     setNavigationBarColor: (color:string)=>undefined,
 }
 const NativeControllerContext = createContext({} as NativeController)
 
-export function NativeControllerProvider(props: PropsWithChildren) {
+interface props extends PropsWithChildren {
+    contextRef?: React.MutableRefObject<any>
+}
+
+export function NativeControllerProvider(props: props) {
     // Splash screen
     const [ appIsReady, setAppIsReady ] = useState(false)
     useEffect(()=>{
@@ -59,6 +63,8 @@ export function NativeControllerProvider(props: PropsWithChildren) {
         setStatusBarColor,
         setNavigationBarColor,
     } as NativeController)
+    if (props.contextRef)
+        props.contextRef.current = NativeControllerRef.current
 
     return (
         <NativeControllerContext.Provider value={NativeControllerRef.current}>

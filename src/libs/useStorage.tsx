@@ -63,7 +63,7 @@ export function StorageProvider({ defaultValues, children }: StorageProviderProp
 
 export default function useStorage(key: string) {
     const storageCache = useContext(StorageContext)
-    const [ _, updateTrigger ] = useState(NaN)
+    const [ _, updateTrigger ] = useState({})
 
     // Add update trigger
     useEffect(()=>{
@@ -103,7 +103,7 @@ export default function useStorage(key: string) {
                 // trigger all renders
                 if (storageCache.updateTriggers[key])
                     for (const trigger of storageCache.updateTriggers[key])
-                        trigger(NaN)
+                        trigger({})
             })
 
             return { running: true }
@@ -119,7 +119,7 @@ export default function useStorage(key: string) {
                 }
                 if (storageCache.updateTriggers[key])
                     for (const trigger of storageCache.updateTriggers[key])
-                        trigger(NaN)
+                        trigger({})
             }).catch(
                 // failed
                 errorHandler||(error=>{console.error(error)})
