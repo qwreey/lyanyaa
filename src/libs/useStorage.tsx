@@ -89,15 +89,17 @@ export default function useStorage(key: string) {
                 // successfully loaded
                 storageCache.cachedValues[key] = {
                     running: false,
-                    result: JSON.parse(value ?? "null"),
-                    errored: false
+                    result: value
+                        ? JSON.parse(value)
+                        : storageCache.defaultValues[key],
+                    errored: false,
                 }
             }).catch(error=>{
                 // failed
                 storageCache.cachedValues[key] = {
                     running: false,
                     result: error,
-                    errored: true
+                    errored: true,
                 }
             }).finally(()=>{
                 // trigger all renders
