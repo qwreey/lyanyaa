@@ -15,3 +15,6 @@ GeneralMapper : TextColor, BackgroundColor, TopbarColor 와 같이 필요한 최
                 *모든 프로퍼티는 XXXColor 로 작명합니다*
 Dark : 다크 테마이며 GeneralMapper 로 구현됩니다
 Light : 라이트 테마이며 GeneralMapper 로 구현됩니다
+
+
+몰겠고 싹다 지워버리고 Provider 만 남겨두자 그리고 storage 같은 접근은 여기서 하지 말고 Main 이 좀 하면 안될까

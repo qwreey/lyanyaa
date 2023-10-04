@@ -1,6 +1,6 @@
 import { Button } from "react-native"
-import { useStorage } from "./libs/useStorage"
-import { useCallback, useState, useRef } from "react"
+import useStorage from "./libs/useStorage"
+import { useCallback } from "react"
 
 export default function Main() {
     const testStorage = useStorage('test')

@@ -77,7 +77,8 @@ export default function useStorage(key: string) {
     },[])
 
     // Create value handler
-    const valueHandler = useRef({
+    const valueHandler = useRef(null as unknown as ValueHandler)
+    if (!valueHandler.current) valueHandler.current = ({
         read() {
             // load cached value first
             let value = storageCache.cachedValues[key]
