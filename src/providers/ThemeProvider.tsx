@@ -1,24 +1,43 @@
-import { useColorScheme } from 'react-native';
+import {
+    useColorScheme,
+    ViewStyle,
+    TextStyle,
+    ImageStyle,
+} from 'react-native'
 import {
     createContext,
     useEffect,
     type PropsWithChildren,
     useState,
-} from "react";
+    Component,
+    useContext,
+} from "react"
 import ThemeBase from "../themes/ThemeBase"
 import useStorage from "../libs/useStorage"
+import CreateStyledComponent,{
+    Props as StyledComponentProps,
+} from "../libs/styledComponents"
 
 // import default themes
 import DarkTheme from "../themes/Dark"
 import LightTheme from "../themes/Light"
 
 export interface Theme extends ThemeBase {}
-const DummyTheme: Theme = {}
+const DummyTheme: Theme = {} as Theme
 
 export const ThemeContext = createContext({} as Theme)
 
 interface props extends PropsWithChildren {
     onReady?: (Theme:Theme)=>undefined,
+}
+
+export function CreateThemedComponent(
+    NativeComponent:typeof Component,
+    callback: (theme:Theme)=>(ViewStyle|TextStyle|ImageStyle)
+) {
+    return (props:Props)=>{
+        const theme = useContext(ThemeContext)
+    }
 }
 
 export function ThemeProvider(props:props) {
