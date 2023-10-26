@@ -19,8 +19,8 @@ import CreateStyledComponent,{
 } from "../libs/styledComponents"
 
 // import default themes
-import DarkTheme from "../themes/Dark"
-import LightTheme from "../themes/Light"
+// import DarkTheme from "../themes/Dark"
+// import LightTheme from "../themes/Light"
 
 export interface Theme extends ThemeBase {}
 const DummyTheme: Theme = {} as Theme
@@ -35,7 +35,7 @@ export function CreateThemedComponent(
     NativeComponent:typeof Component,
     callback: (theme:Theme)=>(ViewStyle|TextStyle|ImageStyle)
 ) {
-    return (props:Props)=>{
+    return (props:StyledComponentProps)=>{
         const theme = useContext(ThemeContext)
     }
 }
